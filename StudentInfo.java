@@ -4,36 +4,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-// if emails are the same
-// if we detete an id that isnt there
-// when we update if we update to an id that isnt there 
 public class StudentInfo {
 
-    /**
-     * A helper function : opens a connection which will be called in all other functions
-     */
+
     private Connection openConnection() throws SQLException {
         return this.getConnection();
     }
 
 
-    /**
-     * a function that will gather all the information from the table and prints them in a userfriendly way .
-     */
+
     private void printStudentDetails(ResultSet rs) throws SQLException {
         int student_id = rs.getInt("student_id");
         String first_name = rs.getString("first_name");
         String last_name = rs.getString("last_name");
         String email = rs.getString("email");
         Date enrollment_date = rs.getDate("enrollment_date");
-        System.out.println("Student " + student_id + " Name: " + first_name + " " + last_name + " Email: " + email + " Enrollment Date: " + enrollment_date);
+        System.out.println("Student: " + student_id + " Name: " + first_name + " " + last_name + " Email: " + email + " Enrollment Date: " + enrollment_date);
     }
 
-    /**
-     * a function that will get all the attribute of the student and print them
-     * with the openConnection() helper function it will establish connection to the data base
-     * woll call printStudentDetails which is a helper function
-     */
+
     public void getAllStudents() {
         String query = "SELECT * FROM students";
         try (Connection connection = openConnection();
@@ -49,11 +38,7 @@ public class StudentInfo {
         }
     }
 
-    /**
-     * Prepares the details of a student for insertion in the database.
-     * This method sets the parameters for a PreparedStatement based on the student's
-     * details.
-     */
+
     private void prepareStudentDetails(PreparedStatement preparedStatement, String first_name, String last_name, String email, Date enrollment_date) throws SQLException {
         preparedStatement.setString(1, first_name);
         preparedStatement.setString(2, last_name);
@@ -61,13 +46,6 @@ public class StudentInfo {
         preparedStatement.setDate(4, new java.sql.Date(enrollment_date.getTime()));
     }
 
-
-    /**
-     * a function that will add a new student to the student's table
-     * it uses the insert sql statement to insert the new information to the table and executes it
-     * IN : student_id , first_name, last_name, email, enrollment_date
-     * OUT: a new row in the student table that contains a new student
-     */
     public void addStudent(String first_name, String last_name, String email, Date enrollment_date) {
         String query = "INSERT INTO students (first_name,last_name,email,enrollment_date) VALUES(?,?,?,?) " + "ON CONFLICT (email) DO NOTHING";
         try (Connection connection = openConnection();
@@ -75,29 +53,21 @@ public class StudentInfo {
             prepareStudentDetails(preparedStatement, first_name, last_name, email, enrollment_date);
             int addRow = preparedStatement.executeUpdate();
             if (addRow > 0) {
-                System.out.println("A new student " + first_name + " " + last_name + " was added successfully ");
+                System.out.println("A new student " + first_name + " " + last_name + " was added  ");
             }else{
-                System.out.println("the email you entered already exists ");
+                System.out.println("this email exists in the table ");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * a function that will update an email that is related to a student using the student_id ( it is intended to be a helper function)
-     */
+
     public void updateDetails(PreparedStatement preparedStatement, String new_email, int student_id) throws SQLException {
         preparedStatement.setString(1, new_email);
         preparedStatement.setInt(2, student_id);
     }
 
-    /**
-     * a function that will update an email that is related to a student using the student_id
-     * it uses the update sql statement to update the new information to the table and executes it
-     * IN : student_id , new_email
-     * OUT: a new email to that student_id
-     */
 
 
     public void updateStudentEmail(int student_id, String new_email) {
@@ -107,9 +77,9 @@ public class StudentInfo {
             updateDetails(preparedStatement, new_email, student_id);
             int addRow = preparedStatement.executeUpdate();
             if (addRow > 0) {
-                System.out.println("Student email" + student_id + " was updated successfully to " + new_email);
+                System.out.println("The Student email" + student_id + " was updated  to " + new_email + "successfully");
             }else{
-                System.out.println("No student found with ID " + student_id + ", or email was the same as the old one.");
+                System.out.println("No student found with the following ID ");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,11 +88,6 @@ public class StudentInfo {
 
     }
 
-    /**
-     * a function that will delete the student_id from the table
-     * it uses the delete sql statement to delete the student_id from the table
-     * IN : student_id
-     */
     public void deleteStudent(int student_id) {
         String query = "DELETE FROM students WHERE student_id = ?";
         try (Connection connection = openConnection();
@@ -130,9 +95,9 @@ public class StudentInfo {
             preparedStatement.setInt(1, student_id);
             int addRow = preparedStatement.executeUpdate();
             if (addRow > 0) {
-                System.out.println("Student " + student_id + " was deleted successfully");
+                System.out.println("the Student " + student_id + "  was deleted ");
             }else{
-                System.out.println("No student found with ID " + student_id );
+                System.out.println("No student found with the following ID ");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -152,7 +117,16 @@ public class StudentInfo {
         }
     }
 
-
+    private static String validateEmail() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the new student's email");
+        String new_email = scanner.nextLine();
+        if (!new_email.contains("@") ||  new_email.isEmpty()  || !new_email.contains(".")) {
+            System.out.println("Invalid input");
+            return null;
+        }
+        return new_email;
+    }
     public static void main(String[] args) {
         getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -195,11 +169,9 @@ public class StudentInfo {
                     }
 
 
-                    System.out.println("Enter the student's email");
-                    String email = scanner.nextLine();
-
-                    if(email.isEmpty() || !email.contains("@") || !email.contains(".")){
-                        System.out.println("invalid input");
+                    String email = validateEmail();
+                    if (email == null) {
+                        System.out.println("Invalid email. Operation cancelled.");
                         break;
                     }
 
@@ -216,36 +188,52 @@ public class StudentInfo {
                             break;
                         } catch (ParseException e) {
                             System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format .");
+                            break;
                         }
                     }
+
+
+
                     break;
 
                 case 3:
                     System.out.println("which student do you want to update ");
 
-
-
-                    System.out.println("Enter the student's id");
+                    System.out.println("Enter the student's id :");
+                    if (!scanner.hasNextInt()) {
+                        System.out.println("Invalid input. Please enter a numeric student ID ");
+                        return;
+                    }
                     student_id = scanner.nextInt();
                     scanner.nextLine();
 
+                    
 
 
-                    System.out.println("Enter the new student's email");
-                    String new_email = scanner.nextLine();
-                    if(new_email.isEmpty() || !new_email.contains("@") || !new_email.contains(".")){
-                        System.out.println("invalid input");
+
+
+                    String new_email = validateEmail();
+                    if (new_email == null) {
+                        System.out.println("Invalid email. Operation cancelled.");
                         break;
                     }
+
+
                     studentInfo.updateStudentEmail(student_id, new_email);
+
+
                     break;
                 case 4:
 
-                    System.out.println("Enter the student's id");
-                     student_id = scanner.nextInt();
+                    System.out.println("Enter the student's id :");
+                    if (!scanner.hasNextInt()) {
+                        System.out.println("Invalid input. Please enter a numeric student ID ");
+                        return;
+                    }
+                    student_id = scanner.nextInt();
                     scanner.nextLine();
-
                     studentInfo.deleteStudent(student_id);
+
                     break;
                 case 0:
                     return;
