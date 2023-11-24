@@ -1,6 +1,3 @@
-# Comp3005_A4
-Comp 3005 assignment 4 question 1 answer 
-
 Naia Almoudareys
 101173126
 
@@ -38,13 +35,14 @@ a drop down menu will be shown
 
 what the functions do :
 1. openConnection() -> A helper function : opens a connection which will be called in all other functions
-2. printStudentDetails(ResultSet rs)-> a function that will gather all the information from the table and prints them in a userfriendly way .
-3. getAllStudents() ->a function that will get all the attribute of the student and print them
-4.  prepareStudentDetails(PreparedStatement preparedStatement, String first_name, String last_name, String email, Date enrollment_date) ->Prepares the details of a student for insertion in the database.
-5. addStudent( String first_name, String last_name, String email, Date enrollment_date)->a function that will add a new student to the student's table
-6.updateDetails(PreparedStatement preparedStatement, String new_email, int student_id ) -> this function will update the new information 
-7. updateStudentEmail(int student_id, String new_email)->a function that will update an email that is related to a student using the student_id
+2. printStudentDetails(ResultSet rs)->  a function that will gather all the information from the table and prints them in a userfriendly way .
+3. getAllStudents() ->a function that will get all the attribute of the student and print them with the openConnection() helper function it will establish connection to the data base will call printStudentDetails which is a helper function
+4.  prepareStudentDetails(PreparedStatement preparedStatement, String first_name, String last_name, String email, Date enrollment_date) -> Prepares the details of a student for insertion in the database.This method sets the parameters for a PreparedStatement based on the student's details.
+5. addStudent( String first_name, String last_name, String email, Date enrollment_date)-> a function that will add a new student to the student's table it uses the insert sql statement to insert the new information to the table and executes itt
+6.updateDetails(PreparedStatement preparedStatement, String new_email, int student_id ) -> a function that will update an email that is related to a student using the student_id ( it is intended to be a helper function)
+7. updateStudentEmail(int student_id, String new_email)-> a function that will update an email that is related to a student using the student_id it uses the update sql statement to update the new information to the table and executes it
 8. deleteStudent(int student_id) ->a function that will delete the student_id from the table
-
+9. getConnection() -> willl connect the sql with the java code 
+10. the main function 
 
  
