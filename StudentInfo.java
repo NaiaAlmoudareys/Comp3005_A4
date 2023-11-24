@@ -207,7 +207,7 @@ public class StudentInfo {
                     student_id = scanner.nextInt();
                     scanner.nextLine();
 
-                    
+
 
 
 
