@@ -204,15 +204,22 @@ public class StudentInfo {
                     }
 
 
-                    System.out.println("Enter the student's enrollment date yyyy-mm-dd\n");
-                    String dateStr = scanner.nextLine();
-                    try {
-                        Date enrollment_date = dateFormat.parse(dateStr);
-                        studentInfo.addStudent(first_name, last_name, email, enrollment_date);
-                    } catch (ParseException e) {
-                        System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+                    SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd");
+                    myDate.setLenient(false);
+
+                    while (true) {
+                        System.out.println("Enter the student's enrollment date (yyyy-MM-dd):");
+                        String dateStr = scanner.nextLine();
+                        try {
+                            Date enrollment_date = myDate.parse(dateStr);
+                            studentInfo.addStudent(first_name, last_name, email, enrollment_date);
+                            break;
+                        } catch (ParseException e) {
+                            System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format .");
+                        }
                     }
                     break;
+
                 case 3:
                     System.out.println("which student do you want to update ");
 
